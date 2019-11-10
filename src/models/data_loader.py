@@ -49,12 +49,18 @@ class Batch(object):
             setattr(self, 'mask_src', mask_src.to(device))
             setattr(self, 'mask_tgt', mask_tgt.to(device))
 
+            src_str = [x[-2] for x in data]
+            setattr(self, 'src_str', src_str)
+            tgt_str = [x[-1] for x in data]
+            setattr(self, 'tgt_str', tgt_str)
 
+            '''
             if (is_test):
                 src_str = [x[-2] for x in data]
                 setattr(self, 'src_str', src_str)
                 tgt_str = [x[-1] for x in data]
                 setattr(self, 'tgt_str', tgt_str)
+            '''
 
     def __len__(self):
         return self.batch_size
@@ -209,13 +215,13 @@ class DataIterator(object):
         clss = clss[:max_sent_id]
         # src_txt = src_txt[:max_sent_id]
 
-
-
+        return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
+        '''
         if(is_test):
             return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
         else:
             return src, tgt, segs, clss, src_sent_labels
-
+        '''
     def batch_buffer(self, data, batch_size):
         minibatch, size_so_far = [], 0
         for ex in data:
@@ -318,11 +324,13 @@ class TextDataloader(object):
         src_sent_labels = src_sent_labels[:max_sent_id]
         clss = clss[:max_sent_id]
         # src_txt = src_txt[:max_sent_id]
-
+        return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
+        '''
         if (is_test):
             return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
         else:
             return src, tgt, segs, clss, src_sent_labels
+        '''
 
     def batch_buffer(self, data, batch_size):
         minibatch, size_so_far = [], 0

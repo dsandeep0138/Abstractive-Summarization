@@ -140,6 +140,19 @@ class Trainer(object):
 
             reduce_counter = 0
             for i, batch in enumerate(train_iter):
+                if i < 2:
+                    print(batch)
+                    print("src = ", batch.src)
+                    print("tgt = ", batch.tgt)
+                    print("segs = ", batch.segs)
+                    print("clss = ", batch.clss)
+                    print("mask_src = ", batch.mask_src)
+                    print("mask_tgt = ", batch.mask_tgt)
+                    print("mask_cls = ", batch.mask_cls)
+                    print("src_str = ", batch.src_str)
+                    print("tgt_str = ", batch.tgt_str)
+
+                    print("#########################################")
                 if self.n_gpu == 0 or (i % self.n_gpu == self.gpu_rank):
 
                     true_batchs.append(batch)
