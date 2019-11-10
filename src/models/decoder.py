@@ -145,7 +145,9 @@ class TransformerDecoder(nn.Module):
 
 
         # Build TransformerDecoder.
-        self.transformer_layers = nn.ModuleList(
+        self.linear_custom = nn.Linear(768, d_model)
+        self.linear_custom_reverse = nn.Linear(d_model, 768)
+        self.transformer_layers = nn.ModuleList(  
             [TransformerDecoderLayer(d_model, heads, d_ff, dropout)
              for _ in range(num_layers)])
 
@@ -168,8 +170,12 @@ class TransformerDecoder(nn.Module):
         assert emb.dim() == 3  # len x batch x embedding_dim
 
         output = self.pos_emb(emb, step)
-
         src_memory_bank = memory_bank
+        #print("+++++++++++++++++++++++++++++++++++++output.size0:++++++++++++++++++++")
+        #print(src_memory_bank.size())
+        src_memory_bank = self.linear_custom(src_memory_bank)
+        #print("+++++++++++++++++++++++++++++++++++++output.size0.1:++++++++++++++++++++")
+        #print(src_memory_bank.size())
         padding_idx = self.embeddings.padding_idx
         tgt_pad_mask = tgt_words.data.eq(padding_idx).unsqueeze(1) \
             .expand(tgt_batch, tgt_len, tgt_len)
@@ -184,7 +190,11 @@ class TransformerDecoder(nn.Module):
 
         if state.cache is None:
             saved_inputs = []
-
+        #print("+++++++++++++++++++++++++++++++++++++output.size1:++++++++++++++++++++")
+        #print(output.size())
+        output = self.linear_custom(output)
+        #print("+++++++++++++++++++++++++++++++++++++output.size2:++++++++++++++++++++")
+        #print(output.size())
         for i in range(self.num_layers):
             prev_layer_input = None
             if state.cache is None:
@@ -200,17 +210,21 @@ class TransformerDecoder(nn.Module):
                     step=step)
             if state.cache is None:
                 saved_inputs.append(all_input)
-
+        #print("+++++++++++++++++++++++++++++++++++++output.size3:++++++++++++++++++++")
+        #print(output.size())
         if state.cache is None:
             saved_inputs = torch.stack(saved_inputs)
 
         output = self.layer_norm(output)
-
+        #print("+++++++++++++++++++++++++++++++++++++output.size4:++++++++++++++++++++")
+        #print(output.size())
         # Process the result and update the attentions.
 
         if state.cache is None:
             state = state.update_state(tgt, saved_inputs)
-
+        output = self.linear_custom_reverse(output)
+        #print("+++++++++++++++++++++++++++++++++++++output.size5:++++++++++++++++++++")
+        #print(output.size())
         return output, state
 
     def init_decoder_state(self, src, memory_bank,
