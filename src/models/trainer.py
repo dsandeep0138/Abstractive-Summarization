@@ -104,6 +104,41 @@ class Trainer(object):
         if (model):
             self.model.train()
 
+    def _print_features(self, batch):
+        print("batch: ", batch)
+        print("src = ", batch.src)
+        print("tgt = ", batch.tgt)
+        print("segs = ", batch.segs)
+        print("clss = ", batch.clss)
+        print("src_linguistic = ", batch.src_linguistic)
+        print("tgt_linguistic = ", batch.tgt_linguistic)
+        print("mask_src = ", batch.mask_src)
+        print("mask_tgt = ", batch.mask_tgt)
+        print("mask_cls = ", batch.mask_cls)
+        print("src_str = ", batch.src_str)
+        print("tgt_str = ", batch.tgt_str)
+        print("+++++++++size+++++++++++")
+        print("src size = ", batch.src.size())
+        print("tgt size= ", batch.tgt.size())
+        print("segs size= ", batch.segs.size())
+        print("clss size= ", batch.clss.size())
+        print("mask_src size= ", batch.mask_src.size())
+        print("mask_tgt size= ", batch.mask_tgt.size())
+        print("mask_cls size= ", batch.mask_cls.size())
+        print("src_linguistic size = ", batch.src_linguistic.shape)
+        print("tgt_linguistic size= ", batch.tgt_linguistic.shape)
+        print("src_str: ")
+        word_count = 0
+        for sentence in batch.src_str[0]:
+            print(sentence)
+            word_count += len(sentence.split())
+        print("word_count: ", word_count)
+        print("tgt_str: ", batch.tgt_str[0])
+        print("src_str size= ", len(batch.src_str[0]))
+        print("tgt_str size= ", len(batch.tgt_str[0]))
+        print("###############################")
+        return batch
+
     def train(self, train_iter_fct, train_steps, valid_iter_fct=None, valid_steps=-1):
         """
         The main training loops.
@@ -141,6 +176,8 @@ class Trainer(object):
             reduce_counter = 0
             for i, batch in enumerate(train_iter):
                 if i < 2:
+                    self._print_features(batch)
+                    '''
                     print(batch)
                     print("src = ", batch.src)
                     print("tgt = ", batch.tgt)
@@ -151,8 +188,9 @@ class Trainer(object):
                     print("mask_cls = ", batch.mask_cls)
                     print("src_str = ", batch.src_str)
                     print("tgt_str = ", batch.tgt_str)
+                    '''
 
-                    print("#########################################")
+                    #print("#########################################")
                 if self.n_gpu == 0 or (i % self.n_gpu == self.gpu_rank):
 
                     true_batchs.append(batch)

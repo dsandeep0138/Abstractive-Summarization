@@ -327,6 +327,10 @@ def train_abs_single(args, device_id):
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
 
+    st = "violence is a bigger threat to the health of european women than cancer"
+    for word in st.split():
+        if word in tokenizer.vocab:
+            print(word, ": " , tokenizer.vocab[word])
     train_loss = abs_loss(model.generator, symbols, model.vocab_size, device, train=True,
                           label_smoothing=args.label_smoothing)
 

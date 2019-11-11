@@ -53,7 +53,11 @@ class Batch(object):
             setattr(self, 'src_str', src_str)
             tgt_str = [x[-1] for x in data]
             setattr(self, 'tgt_str', tgt_str)
-
+            d_ling = 20
+            src_linguistic = torch.rand(src.size()[1], d_ling)
+            setattr(self, 'src_linguistic', src_linguistic)
+            tgt_linguistic = torch.rand(tgt.size()[1], d_ling)
+            setattr(self, 'tgt_linguistic', tgt_linguistic)
             '''
             if (is_test):
                 src_str = [x[-2] for x in data]
