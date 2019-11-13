@@ -148,8 +148,12 @@ class TransformerDecoder(nn.Module):
 
 
         # Build TransformerDecoder.
-        self.linear_custom = nn.Linear(768, d_model)
-        self.linear_custom_reverse = nn.Linear(d_model, 768)
+        self.dim_mismatch = d_model != 768
+
+        if self.dim_mismatch:
+            self.linear_custom = nn.Linear(768, d_model)
+            self.linear_custom_reverse = nn.Linear(d_model, 768)
+            print("TransformerDecoder# Dimension of input is 768, while d_model is {}. Therefore, Adding Upsampling and Downsampling Layer".format(str(d_model)))
         self.common_ff = None
         if use_universal_transformer:
             print("Using Universal Transformer in Decoder")
@@ -180,7 +184,8 @@ class TransformerDecoder(nn.Module):
         src_memory_bank = memory_bank
         #print("+++++++++++++++++++++++++++++++++++++output.size0:++++++++++++++++++++")
         #print(src_memory_bank.size())
-        src_memory_bank = self.linear_custom(src_memory_bank)
+        if self.dim_mismatch:
+            src_memory_bank = self.linear_custom(src_memory_bank)
         #print("+++++++++++++++++++++++++++++++++++++output.size0.1:++++++++++++++++++++")
         #print(src_memory_bank.size())
         padding_idx = self.embeddings.padding_idx
@@ -199,7 +204,8 @@ class TransformerDecoder(nn.Module):
             saved_inputs = []
         #print("+++++++++++++++++++++++++++++++++++++output.size1:++++++++++++++++++++")
         #print(output.size())
-        output = self.linear_custom(output)
+        if self.dim_mismatch:
+            output = self.linear_custom(output)
         #print("+++++++++++++++++++++++++++++++++++++output.size2:++++++++++++++++++++")
         #print(output.size())
         for i in range(self.num_layers):
@@ -229,7 +235,9 @@ class TransformerDecoder(nn.Module):
 
         if state.cache is None:
             state = state.update_state(tgt, saved_inputs)
-        output = self.linear_custom_reverse(output)
+
+        if self.dim_mismatch:
+            output = self.linear_custom_reverse(output)
         #print("+++++++++++++++++++++++++++++++++++++output.size5:++++++++++++++++++++")
         #print(output.size())
         return output, state
