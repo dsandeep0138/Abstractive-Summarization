@@ -175,7 +175,7 @@ class Trainer(object):
 
             reduce_counter = 0
             for i, batch in enumerate(train_iter):
-                if i < 2:
+                if i < 0:
                     self._print_features(batch)
                     '''
                     print(batch)

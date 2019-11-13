@@ -24,7 +24,7 @@ class TransformerDecoderLayer(nn.Module):
       self_attn_type (string): type of self-attention scaled-dot, average
     """
 
-    def __init__(self, d_model, heads, d_ff, dropout):
+    def __init__(self, d_model, heads, d_ff, dropout, common_ff):
         super(TransformerDecoderLayer, self).__init__()
 
 
@@ -33,7 +33,10 @@ class TransformerDecoderLayer(nn.Module):
 
         self.context_attn = MultiHeadedAttention(
             heads, d_model, dropout=dropout)
-        self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout)
+        if not common_ff:
+            self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout)
+        else:
+            self.feed_forward = common_ff
         self.layer_norm_1 = nn.LayerNorm(d_model, eps=1e-6)
         self.layer_norm_2 = nn.LayerNorm(d_model, eps=1e-6)
         self.drop = nn.Dropout(dropout)
@@ -134,7 +137,7 @@ class TransformerDecoder(nn.Module):
        attn_type (str): if using a seperate copy attention
     """
 
-    def __init__(self, num_layers, d_model, heads, d_ff, dropout, embeddings):
+    def __init__(self, num_layers, d_model, heads, d_ff, dropout, embeddings, use_universal_transformer):
         super(TransformerDecoder, self).__init__()
 
         # Basic attributes.
@@ -147,8 +150,12 @@ class TransformerDecoder(nn.Module):
         # Build TransformerDecoder.
         self.linear_custom = nn.Linear(768, d_model)
         self.linear_custom_reverse = nn.Linear(d_model, 768)
+        self.common_ff = None
+        if use_universal_transformer:
+            print("Using Universal Transformer in Decoder")
+            self.common_ff = PositionwiseFeedForward(d_model, d_ff, dropout)
         self.transformer_layers = nn.ModuleList(  
-            [TransformerDecoderLayer(d_model, heads, d_ff, dropout)
+            [TransformerDecoderLayer(d_model, heads, d_ff, dropout, self.common_ff)
              for _ in range(num_layers)])
 
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)

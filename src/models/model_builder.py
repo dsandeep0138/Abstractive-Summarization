@@ -207,7 +207,7 @@ class AbsSummarizer(nn.Module):
         self.decoder = TransformerDecoder(
             self.args.dec_layers,
             self.args.dec_hidden_size, heads=self.args.dec_heads,
-            d_ff=self.args.dec_ff_size, dropout=self.args.dec_dropout, embeddings=tgt_embeddings)
+            d_ff=self.args.dec_ff_size, dropout=self.args.dec_dropout, embeddings=tgt_embeddings, use_universal_transformer=args.dec_universal_trans)
 
         self.generator = get_generator(self.vocab_size, self.args.dec_hidden_size, device)
         self.generator[0].weight = self.decoder.embeddings.weight
