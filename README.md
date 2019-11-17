@@ -1,8 +1,11 @@
-# PreSumm
+## Authors
+* **Sanjeev Kumar Singh**
+* **Devi Sandeep Endluri**
+* **Pinaki Shaw**
 
-**This code is for EMNLP 2019 paper [Text Summarization with Pretrained Encoders](https://arxiv.org/abs/1908.08345)**
+# BertAbsWeightShared
 
-Results on CNN/DailyMail (20/8/2019):
+Results on CNN/DailyMail (11/17/2019):
 
 
 <table class="tg">
@@ -32,8 +35,6 @@ Results on CNN/DailyMail (20/8/2019):
 
 **Updates**: For encoding a text longer than 512 tokens, for example 800. Set max_pos to 800 during both preprocessing and training.
 
-
-Some codes are borrowed from ONMT(https://github.com/OpenNMT/OpenNMT-py)
 
 ## Trained Models
 [CNN/DM Abstractive](https://drive.google.com/open?id=1-IKVCtc4Q-BdZpjXc4s70_fRsWnjtYLr)
@@ -117,4 +118,7 @@ python train.py  -task abs -mode train -bert_data_path BERT_DATA_PATH -dec_dropo
 * `-mode` can be {`validate, test`}, where `validate` will inspect the model directory and evaluate the model for each newly saved checkpoint, `test` need to be used with `-test_from`, indicating the checkpoint you want to use
 * `MODEL_PATH` is the directory of saved checkpoints
 * use `-mode valiadte` with `-test_all`, the system will load all saved checkpoints and select the top ones to generate summaries (this will take a while)
+
+## Acknowledgements
+Base Code is take from [here](https://github.com/nlpyang/PreSumm)
 
