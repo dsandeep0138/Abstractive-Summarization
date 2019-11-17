@@ -34,10 +34,14 @@ Results on CNN/DailyMail (11/17/2019):
 **Package Requirements**: torch==1.1.0 pytorch_transformers tensorboardX multiprocess pyrouge
 
 **Updates**: For encoding a text longer than 512 tokens, for example 800. Set max_pos to 800 during both preprocessing and training.
+## Graphs
 
+<h3 align="center">
+  <img src="images/plots.PNG" width="800">
+</h3>
 
 ## Trained Models
-[CNN/DM Abstractive](https://drive.google.com/open?id=1-IKVCtc4Q-BdZpjXc4s70_fRsWnjtYLr)
+[CNN/DM Abstractive](https://drive.google.com/open?id=1-9Ag7SJlGF0SjSXg3ybPU1g45Ml6if1v)
 
 
 ## Data Preparation For CNN/Dailymail
